@@ -1,0 +1,57 @@
+﻿# .cursorrules - Правила для Cursor IDE
+
+## Проект
+Production-ready starter kit. Next.js 15, React 19, TypeScript 5.
+Российский рынок. Без иностранных платежей.
+
+## Стек
+- Next.js 15 App Router, React 19, TypeScript 5
+- Tailwind CSS 3, shadcn/ui, Framer Motion
+- Zustand, TanStack Query v5, React Hook Form + Zod
+- Prisma 5 + PostgreSQL 17
+- AI: Groq llama-3.3-70b-versatile через ai SDK v6
+- Auth: JWT через jose + bcryptjs (без NextAuth)
+
+## Структура папок
+- app/       — страницы и API роуты
+- features/  — фичи (auth, ai-chat и т.д.)
+- shared/    — утилиты, lib/
+- store/     — Zustand сторы
+- hooks/     — кастомные хуки
+- entities/  — бизнес-сущности
+- widgets/   — крупные блоки страниц
+
+## Обязательные правила
+- TypeScript везде, никогда any
+- Zod для валидации любых данных
+- try/catch для всех async операций
+- "use client" только при использовании хуков или событий
+- Стили только через Tailwind CSS
+- Комментарии на русском языке
+
+## Запрещено
+- Не добавляй npm пакеты без явного запроса
+- Не изменяй схему Prisma без явного запроса
+- Не меняй структуру папок
+- Не используй inline стили
+- Не коммить .env файлы
+
+## Именование
+- Компоненты: PascalCase (UserCard.tsx)
+- Хуки: use + camelCase (useAuth.ts)
+- Папки: kebab-case (user-profile/)
+
+## API роуты — паттерн
+export async function POST(req: Request) {
+  try {
+    const body = await req.json()
+    const data = Schema.parse(body)
+    return Response.json({ success: true })
+  } catch (error) {
+    return Response.json({ error: 'Ошибка' }, { status: 400 })
+  }
+}
+
+## Проверка авторизации в API
+const token = req.cookies.get('token')?.value
+if (!token) return Response.json({ error: 'Не авторизован' }, { status: 401 })

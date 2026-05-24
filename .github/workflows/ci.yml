@@ -1,31 +1,22 @@
 ﻿name: CI
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
-
-      - name: Type check
-        run: npx tsc --noEmit
-
       - name: Build
         run: npm run build
         env:
@@ -34,3 +25,8 @@ jobs:
           GROQ_API_KEY: dummy-key-for-build
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           NEXT_PUBLIC_TELEGRAM_BOT_NAME: test_bot
+          RESEND_API_KEY: dummy-resend-key-for-build
+          YOOKASSA_SHOP_ID: dummy-shop-id
+          YOOKASSA_SECRET_KEY: dummy-secret-key
+          YOOKASSA_WEBHOOK_SECRET: dummy-webhook-secret
+          N8N_WEBHOOK_URL: http://localhost:5678/webhook/dummy

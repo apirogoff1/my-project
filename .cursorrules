@@ -1,57 +1,85 @@
-﻿# .cursorrules - Правила для Cursor IDE
+﻿# .cursorrules - Rules for Cursor IDE
 
-## Проект
-Production-ready starter kit. Next.js 15, React 19, TypeScript 5.
-Российский рынок. Без иностранных платежей.
+## Project
+Production-ready AI starter kit. Next.js 15, React 19, TypeScript 5.
+Russian market. No foreign payments.
 
-## Стек
+## Stack
 - Next.js 15 App Router, React 19, TypeScript 5
 - Tailwind CSS 3, shadcn/ui, Framer Motion
 - Zustand, TanStack Query v5, React Hook Form + Zod
 - Prisma 5 + PostgreSQL 17
-- AI: Groq llama-3.3-70b-versatile через ai SDK v6
-- Auth: JWT через jose + bcryptjs (без NextAuth)
+- AI: Groq llama-3.3-70b-versatile via ai SDK v6
+- Auth: JWT via jose + bcryptjs (no NextAuth)
+- Telegram bot: Telegraf
+- Email: Resend
+- Analytics: Yandex Metrika (ID: 109390519)
+- Payments: YooKassa (Russian market)
+- Automation: n8n self-hosted
 
-## Структура папок
-- app/       — страницы и API роуты
-- features/  — фичи (auth, ai-chat и т.д.)
-- shared/    — утилиты, lib/
-- store/     — Zustand сторы
-- hooks/     — кастомные хуки
-- entities/  — бизнес-сущности
-- widgets/   — крупные блоки страниц
+## Folder structure
+- app/            — pages and API routes
+- features/       — features (auth, ai-chat, telegram, yookassa)
+- shared/         — utilities, lib/
+- store/          — Zustand stores
+- hooks/          — custom hooks
+- entities/       — business entities
+- widgets/        — large page blocks
+- components/     — reusable components (ui/, analytics/)
 
-## Обязательные правила
-- TypeScript везде, никогда any
-- Zod для валидации любых данных
-- try/catch для всех async операций
-- "use client" только при использовании хуков или событий
-- Стили только через Tailwind CSS
-- Комментарии на русском языке
+## Completed features
+- Auth: register/login/logout, JWT, middleware
+- AI chat: Groq llama-3.3-70b-versatile
+- Telegram bot: /start /help /status
+- Telegram Login button
+- YooKassa payment integration (code ready)
+- n8n webhook automation
+- Docker + docker-compose
+- GitHub Actions CI/CD
+- UI Kit: SectionWrapper, GradientText, Badge, FeatureCard, PricingCard, TestimonialCard, HeroSection
+- Landing page: Navbar, Hero, Features, Pricing, Testimonials, FAQ, Footer
+- Email: Resend, welcome email, subscription email
+- SEO: metadata, Open Graph, sitemap.xml, robots.txt, JSON-LD
+- Analytics: Yandex Metrika
 
-## Запрещено
-- Не добавляй npm пакеты без явного запроса
-- Не изменяй схему Prisma без явного запроса
-- Не меняй структуру папок
-- Не используй inline стили
-- Не коммить .env файлы
+## Mandatory rules
+- TypeScript everywhere, never use any
+- Zod for validation of all incoming data
+- try/catch for all async operations
+- "use client" only when using hooks or events
+- Styles only via Tailwind CSS
+- No new npm packages without explicit request
+- No Prisma schema changes without explicit request
 
-## Именование
-- Компоненты: PascalCase (UserCard.tsx)
-- Хуки: use + camelCase (useAuth.ts)
-- Папки: kebab-case (user-profile/)
+## Forbidden
+- Do not add npm packages without explicit request
+- Do not change Prisma schema without explicit request
+- Do not change folder structure
+- Do not use inline styles
+- Do not commit .env files
 
-## API роуты — паттерн
+## Naming conventions
+- Components: PascalCase (UserCard.tsx)
+- Hooks: use + camelCase (useAuth.ts)
+- Folders: kebab-case (user-profile/)
+
+## API route pattern
 export async function POST(req: Request) {
   try {
     const body = await req.json()
     const data = Schema.parse(body)
     return Response.json({ success: true })
   } catch (error) {
-    return Response.json({ error: 'Ошибка' }, { status: 400 })
+    return Response.json({ error: 'Server error' }, { status: 400 })
   }
 }
 
-## Проверка авторизации в API
+## Auth check in API routes
 const token = req.cookies.get('token')?.value
-if (!token) return Response.json({ error: 'Не авторизован' }, { status: 401 })
+if (!token) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+## AI-first workflow tips
+- Always check existing components before creating new ones
+- Reuse UI Kit components from components/ui/ and shared/ui-kit/
+- Keep API routes thin — move logic to features/
+- Use Zustand for global state, TanStack Query for server state

@@ -1,98 +1,67 @@
-﻿# AGENTS.md - Инструкции для AI-агентов (Cursor, Copilot, Claude)
+﻿# AGENTS.md - Guide for AI agents working on this project
 
-## Что это за проект
-Production-ready starter kit для SaaS, AI apps и веб-платформ.
-Российский рынок. Без Stripe, без иностранных платежей.
+## Project overview
+Production-ready AI-first starter kit for Russian market.
+Built with Next.js 15, React 19, TypeScript 5.
 
-## Технический стек (точные версии)
-- Next.js 15, React 19, TypeScript 5
-- Tailwind CSS 3, shadcn/ui (Radix + Nova), Framer Motion
-- Zustand, TanStack Query v5, React Hook Form + Zod
-- Prisma 5.22.0 + PostgreSQL 17
-- AI: Groq llama-3.3-70b-versatile через ai SDK v6
-- Auth: JWT через jose + bcryptjs (без NextAuth)
+## Before making any changes
+1. Read .cursorrules for all rules
+2. Check existing components before creating new ones
+3. Never install new packages without asking
+4. Never change Prisma schema without asking
 
-## Структура проекта
-app/
-  api/auth/        — register, login, logout
-  api/ai/chat/     — AI стриминг через Groq
-  dashboard/       — защищённая страница
-  login/           — страница входа
-  register/        — страница регистрации
-  ai-chat/         — AI чат страница
-  providers.tsx    — QueryClient + AuthProvider
-  layout.tsx       — корневой layout
-features/
-  auth/            — UI компоненты авторизации
-  ai-chat/         — UI компоненты AI чата
-shared/
-  lib/prisma.ts    — singleton Prisma клиент
-  lib/ai.ts        — Groq AI клиент
-store/
-  auth.ts          — Zustand стор авторизации
-hooks/
-  useAuth.ts       — хук для работы с авторизацией
-middleware.ts      — защита роутов (проверка JWT)
+## Project structure
+- app/                    — Next.js pages and API routes
+- app/api/                — API endpoints
+- app/api/auth/           — Auth endpoints (register, login, logout, telegram)
+- app/api/ai/chat/        — AI chat endpoint (Groq)
+- app/api/webhooks/       — Webhook handlers
+- app/api/subscribe/      — Email subscription
+- features/auth/          — Auth UI components and logic
+- features/ai-chat/       — AI chat UI
+- features/telegram/      — Telegram bot and login
+- features/yookassa/      — YooKassa payment integration
+- shared/lib/             — Utilities (ai.ts, n8n.ts)
+- components/ui/          — shadcn/ui components
+- components/analytics/   — Analytics (YandexMetrika)
+- shared/ui-kit/          — Custom UI kit components
+- store/                  — Zustand global state
+- hooks/                  — Custom React hooks
+- prisma/                 — Database schema and migrations
 
-## База данных
-Модели: User (id, email, name, password, role, createdAt, updatedAt)
-        Session (id, userId, token, expiresAt, createdAt)
-Роли: USER | ADMIN | MODERATOR
+## Key files
+- app/layout.tsx          — Root layout with providers and analytics
+- app/page.tsx            — Landing page
+- app/dashboard/page.tsx  — Dashboard (protected)
+- app/ai-chat/page.tsx    — AI chat (protected)
+- middleware.ts           — Auth middleware (protects /dashboard, /ai-chat)
+- prisma/schema.prisma    — Database schema (User, Session)
+- .env                    — Environment variables (never commit)
 
-## Правила генерации кода
+## Environment variables required
+- DATABASE_URL
+- JWT_SECRET
+- GROQ_API_KEY
+- TELEGRAM_BOT_TOKEN
+- NEXT_PUBLIC_APP_URL
+- NEXT_PUBLIC_TELEGRAM_BOT_NAME
+- RESEND_API_KEY
+- YOOKASSA_SHOP_ID
+- YOOKASSA_SECRET_KEY
+- N8N_WEBHOOK_URL
 
-### Обязательно
-- TypeScript везде, никогда any
-- Zod схема для каждого API endpoint
-- try/catch для всех async операций
-- Проверка авторизации в каждом защищённом API роуте
-- "use client" только при использовании хуков или событий
+## How to run locally
+1. npm install
+2. Copy .env.example to .env and fill in values
+3. npx prisma migrate dev
+4. npm run dev
 
-### Запрещено
-- Не добавляй новые npm пакеты без явного запроса
-- Не изменяй схему Prisma без явного запроса
-- Не меняй структуру папок
-- Не используй any, unknown без крайней необходимости
-- Не делай inline стили — только Tailwind классы
-- Не коммить секреты — всё в .env
+## How to run with Docker
+1. docker-compose up --build
 
-### Стиль кода
-- Компоненты: PascalCase (UserCard.tsx)
-- Хуки: use + camelCase (useAuth.ts)
-- Сторы: camelCase + Store (authStore.ts)
-- Папки: kebab-case (user-profile/)
-- Комментарии на русском языке
-
-## Паттерны которые уже используются
-
-### API роут (пример)
-export async function POST(req: Request) {
-  try {
-    const body = await req.json()
-    const data = SomeZodSchema.parse(body)
-    // логика
-    return Response.json({ success: true })
-  } catch (error) {
-    return Response.json({ error: 'Ошибка' }, { status: 400 })
-  }
-}
-
-### Проверка авторизации в API
-const token = req.cookies.get('token')?.value
-if (!token) return Response.json({ error: 'Не авторизован' }, { status: 401 })
-
-### Zustand стор
-import { create } from 'zustand'
-interface State { user: User | null }
-export const useStore = create<State>(() => ({ user: null }))
-
-## Переменные окружения
-DATABASE_URL     — строка подключения PostgreSQL
-JWT_SECRET       — секрет для подписи токенов (мин. 32 символа)
-GROQ_API_KEY     — ключ Groq API
-
-## Приоритеты при разработке
-1. Безопасность
-2. Читаемость кода
-3. Переиспользуемость
-4. Производительность
+## Code style
+- TypeScript strict mode
+- Zod validation for all API inputs
+- try/catch for all async operations
+- Tailwind CSS for all styles
+- No inline styles

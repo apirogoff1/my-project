@@ -1,6 +1,7 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Providers } from './providers'
+import JsonLd from './components/JsonLd'
 import './globals.css'
 
 const geistSans = Geist({
@@ -13,9 +14,51 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+
 export const metadata: Metadata = {
-  title: 'My Project',
-  description: 'My Project App',
+  metadataBase: new URL(APP_URL),
+  title: {
+    default: 'MyProject — AI-powered SaaS Starter',
+    template: '%s | MyProject',
+  },
+  description: 'Professional AI-ready starter kit for modern web applications. Built with Next.js 15, React 19, TypeScript, and Groq AI.',
+  keywords: ['AI', 'SaaS', 'Next.js', 'starter kit', 'web app', 'TypeScript'],
+  authors: [{ name: 'MyProject Team' }],
+  creator: 'MyProject',
+  openGraph: {
+    type: 'website',
+    locale: 'ru_RU',
+    url: APP_URL,
+    siteName: 'MyProject',
+    title: 'MyProject — AI-powered SaaS Starter',
+    description: 'Professional AI-ready starter kit for modern web applications.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'MyProject',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MyProject — AI-powered SaaS Starter',
+    description: 'Professional AI-ready starter kit for modern web applications.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 }
 
 export default function RootLayout({
@@ -29,6 +72,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <JsonLd />
         <Providers>
           {children}
         </Providers>

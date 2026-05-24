@@ -2,20 +2,17 @@
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Providers } from './providers'
 import JsonLd from './components/JsonLd'
+import { YandexMetrika } from '@/components/analytics/YandexMetrika'
 import './globals.css'
-
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 })
-
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 })
-
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
@@ -60,7 +57,6 @@ export const metadata: Metadata = {
     },
   },
 }
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -72,6 +68,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <YandexMetrika />
         <JsonLd />
         <Providers>
           {children}
